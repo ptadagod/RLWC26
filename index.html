@@ -362,7 +362,7 @@
       "Soni Luke","Stefano Utoikamanu","Demitric Vaimauga","Taniela Paseka","Leka Halasima","Latu Fainu",
       "Paul Alamoti","Kulikefu Finefeuiaki","Sione Katoa" ] },
     { name: TEAM_B, color: "#4d8fe8", players: [
-      "Hamiso Tabuai-Fidow","Brian To'o","Izack Tago","Stephen Crichton","Sua Fa'alogo","Chanel Harris-Tavita","Jarome Luai",
+      "Hamiso Tabuai-Fidow","Brian To'o","Izack Tago","Stephen Crichton","Sualauvi Fa'alogo","Chanel Harris-Tavita","Jarome Luai",
       "Francis Molo","Benaiah Ioelu","Junior Paulo","Connelly Lemuelu","Jermaine McEwen","Francis Manuleleua",
       "Jazz Tevaga","Spencer Leniu","Shawn Blore","Ata Mariota","Clayton Faulalo","Ronald Volkman",
       "Pasami Saulo","Enari Tuala","Deine Mariner" ] }
@@ -392,7 +392,10 @@
           const av = document.createElement("div"); av.className = "avatar"; av.textContent = parts[0][0] + parts[parts.length - 1][0];
           const img = new Image(); img.alt = ""; img.loading = "lazy";
           img.onload = () => { av.textContent = ""; av.appendChild(img); };
-          img.src = "players/" + slug(name) + ".jpg";
+          const base = "players/" + slug(name) + ".", exts = ["png", "jpg"];
+          let k = 0;
+          img.onerror = () => { if (++k < exts.length) img.src = base + exts[k]; };
+          img.src = base + exts[0];
           const nm = document.createElement("span"); nm.className = "name"; nm.textContent = name;
           li.append(num, av, nm);
           if (i < 13) { const p = document.createElement("span"); p.className = "pos"; p.textContent = POSITIONS[i]; li.appendChild(p); }
