@@ -331,7 +331,6 @@
     clearTimeout(timer);
     if (!HASH || HASH.indexOf("/") < 1) { setState("invalid"); return; }
     if (hls) { hls.destroy(); hls = null; }
-    setState("connecting");
 
     if (window.Hls && Hls.isSupported()) {
       hls = new Hls({ lowLatencyMode: true, liveSyncDurationCount: 3 });
