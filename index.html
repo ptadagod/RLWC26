@@ -390,7 +390,7 @@
           const li = document.createElement("li");
           const num = document.createElement("span"); num.className = "num"; num.textContent = i + 1;
           const av = document.createElement("div"); av.className = "avatar"; av.textContent = parts[0][0] + parts[parts.length - 1][0];
-          const img = new Image(); img.alt = ""; img.loading = "lazy";
+          const img = new Image(); img.alt = "";
           img.onload = () => { av.textContent = ""; av.appendChild(img); };
           const base = "players/" + slug(name) + ".", exts = ["png", "jpg"];
           let k = 0;
