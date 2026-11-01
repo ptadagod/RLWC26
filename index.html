@@ -62,6 +62,13 @@
   .overlay[hidden] { display: none; }
   .overlay h2 { margin: 0; font: 700 clamp(1.6rem, 4vw, 2.6rem)/1.1 var(--display); letter-spacing: .01em; }
   .overlay p { margin: 0; color: var(--muted); max-width: 44ch; }
+  .score { display: flex; align-items: center; gap: 10px; font: 700 1.3rem/1 var(--display); letter-spacing: .02em; min-width: 0; }
+  .score[hidden] { display: none; }
+  .score .nm { max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-transform: uppercase; font-size: 1rem; color: var(--muted); }
+  .score .pts { font-size: 1.8rem; font-variant-numeric: tabular-nums; }
+  .score .clock { font: 600 .85rem var(--body); color: var(--muted); border: 1px solid var(--line); border-radius: 4px; padding: 2px 8px; }
+  @media (max-width: 700px) { .score { gap: 6px; } .score .nm { max-width: 52px; font-size: .8rem; } .score .pts { font-size: 1.4rem; } }
+  @media (max-width: 520px) { .brand { display: none; } .bar { justify-content: space-between; } }
   .poster-bg { position: absolute; inset: 0; background: linear-gradient(105deg, #b3141f 0 50%, #0b3a8f 50% 100%); background-size: cover; background-position: center; }
   .poster-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(rgba(14,26,43,.5), rgba(14,26,43,.82)); }
   .poster-body { position: relative; display: flex; flex-direction: column; align-items: center; gap: 14px; }
@@ -181,6 +188,9 @@
 <body>
 <header class="bar">
   <div class="brand" id="brand"></div>
+  <div id="score" class="score" hidden aria-live="polite">
+    <span id="scA" class="nm"></span><span id="scAn" class="pts">0</span><span>&ndash;</span><span id="scBn" class="pts">0</span><span id="scB" class="nm"></span><span id="scClock" class="clock" hidden></span>
+  </div>
   <div id="status" class="status" role="status" aria-live="polite"><span class="dot"></span><span id="statusText">Offline</span></div>
 </header>
 
@@ -407,6 +417,15 @@
   }
   renderSquads();
 
+  function showScore(m) {
+    const el = $("score");
+    if (m.off) { el.hidden = true; return; }
+    $("scA").textContent = TEAM_A; $("scB").textContent = TEAM_B;
+    $("scAn").textContent = m.a; $("scBn").textContent = m.b;
+    $("scClock").textContent = m.clock || ""; $("scClock").hidden = !m.clock;
+    el.hidden = false;
+  }
+
   // ---- LIVE CHAT ----
   function initChat() {
     const host = location.hash.slice(1).split("~")[1];
@@ -443,6 +462,7 @@
         } else if (m.type === "msg") add(m);
         else if (m.type === "count") $("chatCount").textContent = m.n + " in chat";
         else if (m.type === "clear") log.textContent = "";
+        else if (m.type === "score") showScore(m);
         else if (m.type === "error") $("chatErr").textContent = m.text;
       };
       ws.onclose = () => setTimeout(connect, Math.min(1000 * ++retry, 8000));
